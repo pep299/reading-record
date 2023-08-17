@@ -1,11 +1,6 @@
 import puppeteer from 'puppeteer';
 import { Book } from "../models/book";
-import { extractAsinFromUrl } from "../helpers/amazon";
-
-function isValidUrl(url: string): boolean {
-    const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
-    return urlPattern.test(url);
-  }
+import { extractAsinFromUrl, isValidUrl } from "../helpers/amazon";
 
 export const amazonServices = {
   async scrapingAmazonProductData(urls: Array<string>): Promise<Array<Book>> {

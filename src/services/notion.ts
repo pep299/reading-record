@@ -86,7 +86,6 @@ export const notionServices = {
       } as CreatePageParameters
     
       const response = await notion.pages.create(parameters)
-      console.log(response)
     }
   }
 }

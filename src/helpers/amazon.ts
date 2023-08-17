@@ -13,3 +13,8 @@ export function extractAsinFromUrl(url: string): string {
   
   return "";
 }
+
+export function isValidUrl(url: string): boolean {
+  const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
+  return urlPattern.test(url);
+}

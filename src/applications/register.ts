@@ -30,18 +30,29 @@ export const registerApplication = {
     console.log(readingList)
     const registeredAsinList = readingList.map(reading => reading.asin)
     console.log(registeredAsinList)
-    const targetAsinList = asinList.filter(asin => !(registeredAsinList.includes(asin)))
-    const amazonUrlList = convertAsinToProductUrl(targetAsinList)
-    console.log(amazonUrlList)
-    if (amazonUrlList.length == 0) {
+    const deduplicatedAsinList = [...new Set(asinList)]
+    const targetAsinList = deduplicatedAsinList.filter(asin => !(registeredAsinList.includes(asin)))
+    if (targetAsinList.length == 0) {
       // inputs all registered
       return
     }
+    
+    const amazonUrlList = convertAsinToProductUrl(targetAsinList)
+    console.log(amazonUrlList)
 
     const bookList = await amazonServices.scrapingAmazonProductData(amazonUrlList)
     console.log("======== staging books =========")
     console.log(bookList)
-    const propertiesList = notionServices.convertCreateParameters(bookList)
+
+    const readingIsbnList = readingList.map(reading => reading.isbn)
+    const readingTitleList = readingList.map(reading => reading.title)
+    const targetBookList = bookList.filter(book => book.isbn ? !(readingIsbnList.includes(book.isbn)) : !(readingTitleList.includes(book.title)))
+    if (targetBookList.length == 0) {
+      // inputs all registered
+      return
+    }
+
+    const propertiesList = notionServices.convertCreateParameters(targetBookList)
     await notionServices.createPages(notion, databaseId, propertiesList)
       .catch((err) => {
         console.error(err);
