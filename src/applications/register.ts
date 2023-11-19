@@ -27,7 +27,6 @@ export const registerApplication = {
       });
     const readingList = notionServices.convertBookList(response)
     console.log("======== registered books =========")
-    console.log(readingList)
     const registeredAsinList = readingList.map(reading => reading.asin)
     console.log(registeredAsinList)
     const deduplicatedAsinList = [...new Set(asinList)]

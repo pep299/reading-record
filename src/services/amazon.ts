@@ -37,12 +37,12 @@ export const amazonServices = {
             console.warn(`Not publisher: ${url}`);
             return
           }),
-          page.$eval("#rpi-attribute-book_details-publication_date .rpi-attribute-value", element => element.textContent?.trim()),
+          page.$eval("#rpi-attribute-book_details-publication_date .rpi-attribute-value > span", element => element.textContent?.trim()),
           page.$eval("#rpi-attribute-book_details-isbn13 .rpi-attribute-value", element => element.textContent?.trim()).catch(() => {
             console.warn(`Not isbn13: ${url}`);
             return
           }),
-          page.$eval("img#imgBlkFront", element => element.src).catch(() => {
+          page.$eval("img#landingImage", element => element.src).catch(() => {
             return
           }),
           page.$eval("img#ebooksImgBlkFront", element => element.src).catch(() => {
@@ -61,6 +61,7 @@ export const amazonServices = {
           asin: extractAsinFromUrl(url),
           amazonUrl: url,
           thumbnail: thumbnail ?? ebookThumbnail ?? "",
+          status: null,
           tags: null,
           memo: null,
           closedAt: null,

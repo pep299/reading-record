@@ -1,5 +1,5 @@
 import { Client } from "@notionhq/client";
-import PageObjectResponse, { CreatePageParameters, DatePropertyItemObjectResponse, FilesPropertyItemObjectResponse, MultiSelectPropertyItemObjectResponse, RichTextItemResponse, SelectPropertyItemObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import PageObjectResponse, { CreatePageParameters, DatePropertyItemObjectResponse, FilesPropertyItemObjectResponse, MultiSelectPropertyItemObjectResponse, RichTextItemResponse, SelectPropertyItemObjectResponse, StatusPropertyItemObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { Book } from "../models/book";
 
 export const notionServices = {
@@ -32,6 +32,7 @@ export const notionServices = {
       const asin = pageObj.properties["asin"]?.type == "rich_text" ? notionProperties.plainText(pageObj.properties["asin"].rich_text) : null
       const amazonUrl = pageObj.properties["amazon_url"]?.type == "url" ? notionProperties.url(pageObj.properties["amazon_url"].url) : null
       const thumbnail = pageObj.properties["thumbnail"]?.type == "files" ? notionProperties.files(pageObj.properties["thumbnail"].files) : null
+      const status = pageObj.properties["status"]?.type == "status" ? notionProperties.status(pageObj.properties["status"].status) : null
       const tags = pageObj.properties["tags"]?.type == "multi_select" ? notionProperties.multiSelect(pageObj.properties["tags"].multi_select) : null
       const memo = pageObj.properties["memo"]?.type == "rich_text" ? notionProperties.plainText(pageObj.properties["memo"].rich_text) : null
       const closedAt = pageObj.properties["closed_at"]?.type == "date" ? notionProperties.date(pageObj.properties["closed_at"].date) : null
@@ -47,6 +48,7 @@ export const notionServices = {
         asin,
         amazonUrl,
         thumbnail,
+        status,
         tags,
         memo,
         closedAt,
@@ -66,7 +68,7 @@ export const notionServices = {
       propertyValues["asin"] = notionField.makeRichTextField(book.asin ?? "")
       propertyValues["isbn"] = notionField.makeRichTextField(book.isbn ?? "")
       propertyValues["amazon_url"] = notionField.makeUrlField(book.amazonUrl ?? "")
-      propertyValues["status"] = notionField.makeStatusField()
+      propertyValues["status"] = notionField.makeStatusField(book.status ?? "")
       propertyValues["thumbnail"] = notionField.makeFilesField(book.thumbnail ?? "")
       return propertyValues
     })
@@ -139,11 +141,11 @@ const notionField = {
       }]
     }
   },
-  makeStatusField(): CreatePageParameters["properties"] {
+  makeStatusField(value: string): CreatePageParameters["properties"] {
     return {
       type: "status",
       status: {
-        name: "Interested" // default value,
+        name: value ?? "Interested" // default value,
       },
     }
   },
@@ -173,7 +175,7 @@ const notionProperties = {
   files(value: FilesPropertyItemObjectResponse["files"]): string {
     return value.map(file => file.name).join(", ")
   },
-  status(value: SelectPropertyItemObjectResponse): string {
-    return value.select?.name ?? ""
+  status(value: StatusPropertyItemObjectResponse["status"] | null): string {
+    return value?.name ?? ""
   },
 }

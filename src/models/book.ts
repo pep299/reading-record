@@ -7,6 +7,7 @@ export interface Book {
   asin: string | null;
   amazonUrl: string | null;
   thumbnail: string | null;
+  status: string | null;
   tags: string | null;
   memo: string | null;
   closedAt: string | null;

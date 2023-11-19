@@ -4,7 +4,7 @@ export function convertAsinToProductUrl(asinList: Array<string>): Array<string> 
 }
 
 export function extractAsinFromUrl(url: string): string {
-  const asinUrlPattern = /\/(dp|gp\/product)\/([A-Z0-9]{10})/;
+  const asinUrlPattern = /\/(dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/;
   const match = url.match(asinUrlPattern);
   
   if (match && match.length >= 3) {
